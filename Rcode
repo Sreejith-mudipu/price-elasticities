@@ -1,0 +1,18 @@
+salesdata <- fread("Online_Sales_Data.csv")
+str(salesdata)
+
+salesmmax <- ungroup(salesdata) %>% filter(Brand=="Micromax")
+
+salesmmaxagg <- ungroup(salesmmax) %>% group_by(Day) %>% summarise(minsp=mean(Min.Sold.Price), meansp=mean(Mean.Sold.Price), maxsp=mean(Max.Sold.Price), totsale=mean(Tot.Sales)) %>% select(-Day)
+str(salesmmaxagg)
+
+cor(salesmmax[,-c(1,2)])
+
+library(corrplot)
+corrplot(cor(salesmmax[,-c(1,2)]), method = "number", type="upper")
+
+corrplot(cor(salesmmaxagg), method = "number", type="upper")
+
+mmaxlm <- lm(totsale~., data=salesmmaxagg)
+summary(mmaxlm)
+library(car); vif(mmaxlm)
